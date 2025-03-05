@@ -12,3 +12,7 @@ bool AsyncStop::isActive() {
 void AsyncStop::setDuration(unsigned long ms) {
     duration = ms;
 }
+AsyncStop& AsyncStop::getInstance() {
+    static AsyncStop instance;  
+    return instance;
+}

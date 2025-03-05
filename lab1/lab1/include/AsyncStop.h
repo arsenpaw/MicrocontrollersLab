@@ -7,4 +7,5 @@ class AsyncStop {
         void request();
         bool isActive();
         void setDuration(unsigned long ms);
+        static AsyncStop& getInstance(); 
     };

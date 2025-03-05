@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "asyncstop.h"
+#include <ButtonWebServer.h>
 #define BUTTON_PIN 4
 #define LED_1_PIN 16
 #define LED_2_PIN 17
@@ -12,16 +13,12 @@ int previousMillis = 0;
 int buttonPressStartTime = 0;
 bool isButtonPressed = 0;
 bool isButtonEnoughPressed = 0;
-bool isStopRequested = 0;
-unsigned long stopUntil = 0;
-AsyncStop& getAsyncStop() {
-  static AsyncStop instance;
-  return instance;
-}
 
+ButtonWebServer buttonWebServer("PC", "123456789");
 void setup()
 {
   Serial.begin(9600);
+  buttonWebServer.init();
   pinMode(BUTTON_PIN, INPUT); 
   for (int i = 0; i < numLeds; i++) 
   {
@@ -73,11 +70,12 @@ bool onRelease()
 
 
 void loop() {
+  buttonWebServer.handleClient();
   if (onRelease()) {
-    getAsyncStop().request();
+    AsyncStop::getInstance().request();
   }
 
-  if (getAsyncStop().isActive()) {
+  if (AsyncStop::getInstance().isActive()) {
     return; 
   }
 
