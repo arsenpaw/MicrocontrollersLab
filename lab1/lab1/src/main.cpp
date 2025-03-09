@@ -8,11 +8,15 @@
 
 const int leds[] = {LED_1_PIN, LED_2_PIN, LED_3_PIN}; 
 const int numLeds = sizeof(leds) / sizeof(leds[0]);
+int buttonState;            
+int lastButtonState = HIGH;  
 int currentLed = 0;
+int lastDebounceTime = 0;
 int previousMillis = 0; 
 int buttonPressStartTime = 0;
 bool isButtonPressed = 0;
 bool isButtonEnoughPressed = 0;
+unsigned long buttonLastReadTime = 0;
 
 ButtonWebServer buttonWebServer("PC", "123456789");
 void setup()
@@ -40,42 +44,66 @@ void blinkLED()
     previousMillis = currentMillis;
   }
 }
+int readDebouncedButton() {
+  int reading = digitalRead(BUTTON_PIN);
 
-bool onRelease()
-{
-  unsigned int currentMillis = millis();
-  
-  int buttonState = digitalRead(BUTTON_PIN); 
-  if (buttonState == LOW && !isButtonPressed) 
-  {
-     buttonPressStartTime = currentMillis;
-     isButtonPressed = true;
-     isButtonEnoughPressed = false;
+  if (reading != lastButtonState) {
+
+    lastDebounceTime = millis();
   }
 
-  if (buttonState == LOW && isButtonPressed) 
-  {
-    if (currentMillis - buttonPressStartTime > 2000) 
-    {
-       isButtonEnoughPressed = true;
+  if ((millis() - lastDebounceTime) > 250){
+    if (reading != buttonState) {
+      buttonState = reading;
     }
   }
-  if (buttonState == HIGH && isButtonEnoughPressed) {
+
+  lastButtonState = reading;
+  return reading;
+}
+bool onRelease()
+{
+
+  unsigned int currentMillis = millis();
+  int buttonState  = readDebouncedButton();
+  if (buttonState == LOW)
+   {
+    if (!isButtonPressed)
+     {
+      buttonPressStartTime = currentMillis;
+      isButtonPressed = true;
+      Serial.println("Button pressed");
+    }
+    else if (currentMillis - buttonPressStartTime > 2000) 
+    {
+      Serial.println("Button too long pressed");
+      isButtonEnoughPressed = true;
+    }
+    return false;
+  }
+  else
+  {
+    isButtonPressed = false;
+  }
+
+  if (isButtonEnoughPressed) 
+  {
     isButtonPressed = false;
     isButtonEnoughPressed = false;
     return true;
   }
+  
   return false;
 }
-
-
 void loop() {
   buttonWebServer.handleClient();
-  if (onRelease()) {
+  if (onRelease()) 
+  {
     AsyncStop::getInstance().request();
   }
 
-  if (AsyncStop::getInstance().isActive()) {
+  if (AsyncStop::getInstance().isActive()) 
+  {
     return; 
   }
 

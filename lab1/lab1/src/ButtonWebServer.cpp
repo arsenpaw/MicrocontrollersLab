@@ -8,13 +8,10 @@ ButtonWebServer::ButtonWebServer(const char* wifiSSID, const char* wifiPassword)
 void ButtonWebServer::init() {
     IPAddress subnet(255, 255, 255, 0);
 
-    // Stop any existing WiFi connections
     WiFi.disconnect(true);
-    
-    // Start in AP mode
+
     WiFi.mode(WIFI_AP);
     
-    // Start the AP
     if (!WiFi.softAPConfig(apIP, apIP, subnet)) {
         Serial.println("AP Config failed");
     }
@@ -32,7 +29,6 @@ void ButtonWebServer::init() {
     server.on("/press", HTTP_POST, [this]() { this->handleButtonStatus(); });
     server.onNotFound([this]() { this->handleNotFound(); });
     
-    // Start server
     server.begin();
     Serial.println("HTTP server started");
 }
