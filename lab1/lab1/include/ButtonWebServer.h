@@ -1,15 +1,17 @@
-#include <WebServer.h>
-class ButtonWebServer {
-    public:
-        ButtonWebServer(const char* wifiSSID, const char* wifiPassword);
-        void init();
-        void handleClient();
-    private:
-        void handleRoot();
-        void handleButtonStatus();
-        void handleNotFound();
-        WebServer server;
-        const char* wifiSSID;
-        const char* wifiPassword;
-        IPAddress apIP;
-    };
+#ifndef BUTTONWEBSERVER_H
+#define BUTTONWEBSERVER_H
+
+#include "WebServerBase.h"
+
+class ButtonWebServer : public WebServerBase {
+public:
+    ButtonWebServer(const char* ssid, const char* password);
+    virtual void init();
+    virtual void handleRoot() override;
+    virtual void handleButtonStatus();
+private:
+    const char* wifiSSID;
+    const char* wifiPassword;
+};
+
+#endif
