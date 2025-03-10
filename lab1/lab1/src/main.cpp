@@ -23,7 +23,7 @@ uint32_t buttonPressStartTime = 0;
 ButtonWebServer buttonWebServer("ARSEN_ESP32", "123456789");
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   buttonWebServer.init();
   pinMode(BUTTON_PIN, INPUT); 
   for (int i = 0; i < numLeds; i++) 

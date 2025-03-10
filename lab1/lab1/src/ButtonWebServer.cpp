@@ -5,7 +5,7 @@
 #include "ButtonWebServer.h"
 
 ButtonWebServer::ButtonWebServer(const char* ssid, const char* password)
-    : WebServerBase(80)
+    : WebServerBase(80), wifiSSID(ssid), wifiPassword(password)
 {
 }
 
