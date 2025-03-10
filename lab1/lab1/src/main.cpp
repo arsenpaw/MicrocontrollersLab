@@ -1,24 +1,26 @@
 #include <Arduino.h>
-#include "asyncstop.h"
 #include <ButtonWebServer.h>
+#include <AsyncStop.h>
+
 #define BUTTON_PIN 4
 #define LED_1_PIN 16
 #define LED_2_PIN 17
 #define LED_3_PIN 5
-
-const int leds[] = {LED_1_PIN, LED_2_PIN, LED_3_PIN}; 
-const int numLeds = sizeof(leds) / sizeof(leds[0]);
-int buttonState;            
-int lastButtonState = HIGH;  
-int currentLed = 0;
-int lastDebounceTime = 0;
-int previousMillis = 0; 
-int buttonPressStartTime = 0;
+#define ButtonDebounceTime 250
+#define LedDelayTiem 500
+#define ButtonLongPressTime 2000
+const uint8_t leds[] = {LED_1_PIN, LED_2_PIN, LED_3_PIN}; 
+const uint8_t numLeds = sizeof(leds) / sizeof(leds[0]);
+bool buttonState;            
+bool lastButtonState = HIGH;  
 bool isButtonPressed = 0;
 bool isButtonEnoughPressed = 0;
-unsigned long buttonLastReadTime = 0;
-
-ButtonWebServer buttonWebServer("PC", "123456789");
+bool buttonToggle = 0;
+uint8_t currentLed = 0;
+uint32_t lastDebounceTime = 0;
+uint32_t previousMillis = 0; 
+uint32_t buttonPressStartTime = 0;
+ButtonWebServer buttonWebServer("ARSEN_ESP32", "123456789");
 void setup()
 {
   Serial.begin(9600);
@@ -32,39 +34,37 @@ void setup()
 
 void blinkLED()
 {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= 500)
+  uint32_t currentMillis = millis();
+  if (currentMillis - previousMillis >= LedDelayTiem) 
    {
     digitalWrite(leds[currentLed], LOW);
-    
     currentLed = (currentLed + 1) % numLeds;
-    
     digitalWrite(leds[currentLed], HIGH);
-
     previousMillis = currentMillis;
   }
 }
+
 int readDebouncedButton() {
   int reading = digitalRead(BUTTON_PIN);
-
-  if (reading != lastButtonState) {
-
+  if (reading != lastButtonState) 
+  {
     lastDebounceTime = millis();
   }
 
-  if ((millis() - lastDebounceTime) > 250){
-    if (reading != buttonState) {
+  if ((millis() - lastDebounceTime) > ButtonDebounceTime)
+  {
+    if (reading != buttonState)
+     {
       buttonState = reading;
     }
   }
-
   lastButtonState = reading;
   return reading;
 }
+
 bool onRelease()
 {
-
-  unsigned int currentMillis = millis();
+  uint32_t currentMillis = millis();
   int buttonState  = readDebouncedButton();
   if (buttonState == LOW)
    {
@@ -74,7 +74,7 @@ bool onRelease()
       isButtonPressed = true;
       Serial.println("Button pressed");
     }
-    else if (currentMillis - buttonPressStartTime > 2000) 
+    else if (currentMillis - buttonPressStartTime > ButtonLongPressTime) 
     {
       Serial.println("Button too long pressed");
       isButtonEnoughPressed = true;
@@ -95,8 +95,10 @@ bool onRelease()
   
   return false;
 }
-void loop() {
-  buttonWebServer.handleClient();
+
+
+void blinkLedWithAsyncStop()
+{
   if (onRelease()) 
   {
     AsyncStop::getInstance().request();
@@ -108,4 +110,12 @@ void loop() {
   }
 
   blinkLED();
+
 }
+
+void loop() {
+
+  buttonWebServer.handleClient();
+  blinkLedWithAsyncStop();
+}
+
