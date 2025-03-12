@@ -8,7 +8,6 @@ ButtonWebServer::ButtonWebServer(const char* ssid, const char* password)
     : WebServerBase(80), wifiSSID(ssid), wifiPassword(password)
 {
 }
-
 void ButtonWebServer::init()
 {
     initAP(wifiSSID, wifiPassword);

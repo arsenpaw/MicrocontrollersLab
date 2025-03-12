@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include <ButtonWebServer.h>
 #include "AsyncStop.h"
-
+#include "CommunicationService.h"
+#include "ToogleCommand.h"
 #define BUTTON_PIN 4
-#define LED_1_PIN 16
-#define LED_2_PIN 17
-#define LED_3_PIN 5
+#define LED_1_PIN 21
+#define LED_2_PIN 19
+#define LED_3_PIN 18
 #define ButtonDebounceTime 250
 #define LedDelayTiem 500
 #define ButtonLongPressTime 2000
@@ -20,16 +21,23 @@ uint8_t currentLed = 0;
 uint32_t lastDebounceTime = 0;
 uint32_t previousMillis = 0; 
 uint32_t buttonPressStartTime = 0;
-ButtonWebServer buttonWebServer("ARSEN_ESP32", "123456789");
+ButtonWebServer buttonWebServer("ARSEN_ESP32", "1123456789");
+HardwareSerial uartBridge(Serial2);
+CommunicationService communicationService(uartBridge, 115200);
+
 void setup()
 {
   Serial.begin(115200);
+ // Serial2.begin(115200, SERIAL_6E2,16,17);
+ // uartBridge.begin(115200, SERIAL_6E2,16,17);
   buttonWebServer.init();
   pinMode(BUTTON_PIN, INPUT); 
   for (int i = 0; i < numLeds; i++) 
   {
     pinMode(leds[i], OUTPUT);
   }
+
+  
 }
 
 void blinkLED()
@@ -116,6 +124,16 @@ void blinkLedWithAsyncStop()
 void loop() {
 
   buttonWebServer.handleClient();
-  blinkLedWithAsyncStop();
+  blinkLedWithAsyncStop();  
+  communicationService.onReceive([](ToogleCommand command) {
+    Serial.println("Received command");
+    if (command == ToogleCommand::ON) 
+    {
+      AsyncStop::getInstance().request();
+    } 
+});
+communicationService.send(ToogleCommand::OFF);
+delay(300);
+
 }
 
