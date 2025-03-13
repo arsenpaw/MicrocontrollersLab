@@ -1,17 +1,18 @@
 #ifndef BUTTONWEBSERVER_H
 #define BUTTONWEBSERVER_H
-
+#include "CommunicationService.h"
 #include "WebServerBase.h"
 
 class ButtonWebServer : public WebServerBase {
 public:
-    ButtonWebServer(const char* ssid, const char* password);
+    ButtonWebServer(const char* ssid, const char* password, CommunicationService communicationService);
     virtual void init();
-    virtual void handleRoot() override;
     virtual void handleButtonStatus();
+    void handleRemoteButtonStatus();
 private:
     const char* wifiSSID;
     const char* wifiPassword;
+    CommunicationService communicationService;
 };
 
 #endif

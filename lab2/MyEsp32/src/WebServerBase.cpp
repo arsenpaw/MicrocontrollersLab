@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include "AsyncStop.h"
-
+#include "SPIFFS.h"
 #include "WebServerBase.h"
 
 WebServerBase::WebServerBase(uint16_t port)
@@ -38,7 +38,7 @@ void WebServerBase::initAP(const char* ssid, const char* password, IPAddress ip)
 
 void WebServerBase::setupRoutes()
 {
-    server.on("/", HTTP_GET, [this]() { this->handleRoot(); });
+    server.serveStatic("/", SPIFFS, "/index.html");
     server.onNotFound([this]() { this->handleNotFound(); });
 }
 
@@ -48,14 +48,10 @@ void WebServerBase::start()
     Serial.println("HTTP server started");
 }
 
-void WebServerBase::handleRoot()
-{
-    server.send(200, "text/html", "<html><body><h1>Default Root</h1></body></html>");
-}
 
 void WebServerBase::handleNotFound()
 {
-    server.send(404, "text/plain", "404: Not Found");
+    server.send(404, "text/plain", "404: Path Not Found");
 }
 
 void WebServerBase::handleClient()

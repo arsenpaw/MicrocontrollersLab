@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Button Status</title>
+  </head>
+  <body>
+    <h1>Button Web Server</h1>
+    <button onclick="sendRequest('/press')">Press Button</button>
+    <button onclick="sendRequest('/pressRemote')">Press Remote</button>
+    <script>
+      function sendRequest(route) {
+        fetch(route, { method: 'POST' })
+          .then(response => response.text())
+          .then(data => console.log(data));
+      }
+    </script>
+  </body>
+</html>

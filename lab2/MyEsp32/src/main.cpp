@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <ButtonWebServer.h>
+#include <SPIFFS.h>
 #include "AsyncStop.h"
 #include "CommunicationService.h"
 #include "ToogleCommand.h"
@@ -21,13 +22,17 @@ uint8_t currentLed = 0;
 uint32_t lastDebounceTime = 0;
 uint32_t previousMillis = 0; 
 uint32_t buttonPressStartTime = 0;
-ButtonWebServer buttonWebServer("ARSEN_ESP32", "1123456789");
 HardwareSerial uartBridge(Serial2);
 CommunicationService communicationService(uartBridge, 115200);
+ButtonWebServer buttonWebServer("ARSEN_ESP32", "123456789", communicationService);
 
 void setup()
 {
   Serial.begin(115200);
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
  // Serial2.begin(115200, SERIAL_6E2,16,17);
  // uartBridge.begin(115200, SERIAL_6E2,16,17);
   buttonWebServer.init();
@@ -132,8 +137,6 @@ void loop() {
       AsyncStop::getInstance().request();
     } 
 });
-communicationService.send(ToogleCommand::OFF);
-delay(300);
 
 }
 
