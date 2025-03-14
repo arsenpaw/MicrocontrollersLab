@@ -2,6 +2,6 @@
 #include <cstdint>
 
 enum class ToogleCommand : uint8_t {
-    OFF = 100,
-    ON = 200,
+    OFF = 10,
+    ON = 20,
 };

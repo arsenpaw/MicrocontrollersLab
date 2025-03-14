@@ -15,13 +15,15 @@ int currentLed = 0;
 bool buttonPressed = false;
 uint32_t lastButtonPress = 0;
 bool sequenceMode = true; 
-SoftwareSerial mySerial(D7, D6); //rx tx
+SoftwareSerial mySerial(D7, D6, false); //rx tx
 CommunicationService communicationService(mySerial, 115200);
 const char* ssid = "MyESP";
 ESP8266WebServer server(80);
 
 
 void processButtonAction() {
+    // mySerial.begin(115200, SWSERIAL_6E2,D7, D6);
+    communicationService.init();
     if (sequenceMode) {
         sequenceMode = false;
         Serial.println("Manual mode");
@@ -42,7 +44,7 @@ void processButtonAction() {
 }
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     pinMode(BUTTON_PIN, INPUT_PULLUP); 
     pinMode(LED1_PIN, OUTPUT);

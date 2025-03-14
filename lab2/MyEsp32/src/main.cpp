@@ -28,6 +28,8 @@ ButtonWebServer buttonWebServer("ARSEN_ESP32", "123456789", communicationService
 
 void setup()
 {
+  // uartBridge.begin(115200, SERIAL_6E2,16,17);
+  communicationService.init();  
   Serial.begin(115200);
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");

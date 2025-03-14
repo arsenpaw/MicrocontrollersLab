@@ -4,8 +4,13 @@
 CommunicationService::CommunicationService(SoftwareSerial& serial, uint32_t baudRate)
     : communicationSerial(serial), baudRate(baudRate)
 {
-    communicationSerial.begin(115200, SWSERIAL_6E2,D7, D6);
+   
 
+}
+
+void CommunicationService::init()
+{
+    communicationSerial.begin(115200, SWSERIAL_6E2,D7, D6);
 }
 
 void CommunicationService::send(ToogleCommand command)

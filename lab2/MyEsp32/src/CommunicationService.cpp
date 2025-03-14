@@ -4,10 +4,14 @@
 CommunicationService::CommunicationService(HardwareSerial& serial, uint32_t baudRate)
     : communicationSerial(serial), baudRate(baudRate)
 {
-    communicationSerial.begin(115200, SERIAL_6E2,16,17);
+
 
 }
 
+void CommunicationService::init()
+{
+    communicationSerial.begin(115200, SERIAL_6E2,16,17);
+}
 void CommunicationService::send(ToogleCommand command)
 {
     communicationSerial.write((uint8_t)command);
