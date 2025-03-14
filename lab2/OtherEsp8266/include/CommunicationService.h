@@ -11,6 +11,6 @@ public:
     void send(ToogleCommand command);
     void onReceive(CommandDelegate commandDelegate);
 private:
-    SoftwareSerial& serial; 
+    SoftwareSerial& communicationSerial; 
     uint32_t baudRate = 115200;
 };
