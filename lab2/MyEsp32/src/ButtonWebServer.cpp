@@ -19,6 +19,12 @@ void ButtonWebServer::init()
     start();
 }
 
+void ButtonWebServer::handleReactRouting()
+{
+    server.on("/", HTTP_GET, [this]() {
+        server.send(200, "text/html", "<form action=\"/press\" method=\"post\"><button>Press me</button></form>");
+    });
+}
 
 void ButtonWebServer::handleButtonStatus()
 {

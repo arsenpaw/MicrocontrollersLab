@@ -6,6 +6,8 @@
 #include "AsyncStop.h"
 
 class WebServerBase {
+private:
+    void handleReactorRouting();
 public:
     WebServerBase(uint16_t port = 80);
     virtual ~WebServerBase();

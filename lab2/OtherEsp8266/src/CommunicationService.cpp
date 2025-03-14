@@ -1,10 +1,10 @@
 #include "CommunicationService.h"
 #include <thread>
 
-CommunicationService::CommunicationService(HardwareSerial& serial, uint32_t baudRate)
+CommunicationService::CommunicationService(SoftwareSerial& serial, uint32_t baudRate)
     : serial(serial), baudRate(baudRate)
 {
-    serial.begin(115200, SERIAL_6E2,16,17, false);
+    serial.begin(115200, SWSERIAL_6E2,D7, D6);
 
 }
 
@@ -17,6 +17,7 @@ void CommunicationService::send(ToogleCommand command)
 
 void CommunicationService::onReceive(CommandDelegate commandDelegate)
 {
+    Serial.println(serial.available());
     if (serial.available())
     {
         int receivedData = serial.read(); 

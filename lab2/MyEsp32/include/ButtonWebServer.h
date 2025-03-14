@@ -13,6 +13,7 @@ private:
     const char* wifiSSID;
     const char* wifiPassword;
     CommunicationService communicationService;
+    void handleReactRouting();
 };
 
 #endif

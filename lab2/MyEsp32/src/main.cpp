@@ -128,8 +128,8 @@ void blinkLedWithAsyncStop()
 
 void loop() {
 
-  buttonWebServer.handleClient();
-  blinkLedWithAsyncStop();  
+  // buttonWebServer.handleClient();
+  // blinkLedWithAsyncStop();  
   communicationService.onReceive([](ToogleCommand command) {
     Serial.println("Received command");
     if (command == ToogleCommand::ON) 
@@ -137,6 +137,8 @@ void loop() {
       AsyncStop::getInstance().request();
     } 
 });
+communicationService.send(ToogleCommand::OFF);
+delay(1000);
 
 }
 
