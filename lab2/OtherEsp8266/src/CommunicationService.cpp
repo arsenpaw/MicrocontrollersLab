@@ -10,6 +10,7 @@ CommunicationService::CommunicationService(SoftwareSerial& serial, uint32_t baud
 
 void CommunicationService::init()
 {
+    //Q: why not in constructor?
     communicationSerial.begin(115200, SWSERIAL_6E2,D7, D6);
 }
 
