@@ -23,7 +23,6 @@ ESP8266WebServer server(80);
 
 
 void processButtonAction() {
-    communicationService.init();
     if (sequenceMode) {
         sequenceMode = false;
         Serial.println("Manual mode");
@@ -45,7 +44,7 @@ void processButtonAction() {
 
 void setup() {
     Serial.begin(115200);
-
+    communicationService.init();
     pinMode(BUTTON_PIN, INPUT_PULLUP); 
     pinMode(LED1_PIN, OUTPUT);
     pinMode(LED2_PIN, OUTPUT);
