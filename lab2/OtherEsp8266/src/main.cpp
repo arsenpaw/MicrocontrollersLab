@@ -13,6 +13,7 @@
 uint8_t ledOrder[] = {LED1_PIN, LED2_PIN, LED3_PIN}; 
 int currentLed = 0;   
 bool buttonPressed = false;
+
 uint32_t lastButtonPress = 0;
 bool sequenceMode = true; 
 SoftwareSerial mySerial(D7, D6, false); //rx tx
@@ -22,7 +23,6 @@ ESP8266WebServer server(80);
 
 
 void processButtonAction() {
-    // mySerial.begin(115200, SWSERIAL_6E2,D7, D6);
     communicationService.init();
     if (sequenceMode) {
         sequenceMode = false;

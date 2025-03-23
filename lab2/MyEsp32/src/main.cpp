@@ -4,13 +4,13 @@
 #include "AsyncStop.h"
 #include "CommunicationService.h"
 #include "ToogleCommand.h"
-#define BUTTON_PIN 4
-#define LED_1_PIN 21
-#define LED_2_PIN 19
-#define LED_3_PIN 18
-#define ButtonDebounceTime 250
-#define LedDelayTiem 500
-#define ButtonLongPressTime 2000
+#define BUTTON_PIN 4U
+#define LED_1_PIN 21U
+#define LED_2_PIN 19U
+#define LED_3_PIN 18U
+#define ButtonDebounceTime 250U
+#define LedDelayTiem 500U
+#define ButtonLongPressTime 2000U
 const uint8_t leds[] = {LED_1_PIN, LED_2_PIN, LED_3_PIN}; 
 const uint8_t numLeds = sizeof(leds) / sizeof(leds[0]);
 bool buttonState;            
@@ -43,8 +43,6 @@ void setup()
   {
     pinMode(leds[i], OUTPUT);
   }
-
-  
 }
 
 void blinkLED()
@@ -80,7 +78,7 @@ int readDebouncedButton() {
 bool onRelease()
 {
   uint32_t currentMillis = millis();
-  int buttonState  = readDebouncedButton();
+  uint32_t buttonState  = readDebouncedButton();
   if (buttonState == LOW)
    {
     if (!isButtonPressed)
