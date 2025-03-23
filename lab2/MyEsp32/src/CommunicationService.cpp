@@ -10,7 +10,7 @@ CommunicationService::CommunicationService(HardwareSerial& serial, uint32_t baud
 
 void CommunicationService::init()
 {
-    communicationSerial.begin(115200, SERIAL_6E2,16,17);
+    communicationSerial.begin(baudRate, SERIAL_6E2,16,17);
 }
 void CommunicationService::send(ToogleCommand command)
 {

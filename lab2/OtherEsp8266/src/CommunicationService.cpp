@@ -11,7 +11,7 @@ CommunicationService::CommunicationService(SoftwareSerial& serial, uint32_t baud
 void CommunicationService::init()
 {
     //Q: why not in constructor?
-    communicationSerial.begin(115200, SWSERIAL_6E2,D7, D6);
+    communicationSerial.begin(baudRate, SWSERIAL_6E2,D7, D6);
 }
 
 void CommunicationService::send(ToogleCommand command)
