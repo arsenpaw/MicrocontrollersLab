@@ -3,6 +3,7 @@
 #include <SPIFFS.h>
 #include "AsyncStop.h"
 #include "CommunicationService.h"
+#include "CurrentLEd.h"
 #include "ToogleCommand.h"
 #define BUTTON_PIN 4U
 #define LED_1_PIN 21U
@@ -18,7 +19,6 @@ bool lastButtonState = HIGH;
 bool isButtonPressed = 0;
 bool isButtonEnoughPressed = 0;
 bool buttonToggle = 0;
-uint8_t currentLed = 0;
 uint32_t lastDebounceTime = 0;
 uint32_t previousMillis = 0; 
 uint32_t buttonPressStartTime = 0;
@@ -50,9 +50,11 @@ void blinkLED()
   uint32_t currentMillis = millis();
   if (currentMillis - previousMillis >= LedDelayTiem) 
    {
+    uint8_t currentLed  = CurrentLed::getInstance().ledNumber;
     digitalWrite(leds[currentLed], LOW);
     currentLed = (currentLed + 1) % numLeds;
     digitalWrite(leds[currentLed], HIGH);
+    CurrentLed::getInstance().ledNumber = currentLed;
     previousMillis = currentMillis;
   }
 }
@@ -135,7 +137,12 @@ void loop() {
     if (command == ToogleCommand::ON) 
     {
       AsyncStop::getInstance().request();
+      communicationService.send(ToogleCommand::SUCCESSFULLY_RECEIVED);
     } 
+    if (command == ToogleCommand::SUCCESSFULLY_RECEIVED) 
+    {
+      AsyncStop::getInstance().request();
+    }
 });
 // communicationService.send(ToogleCommand::OFF);
 

@@ -8,6 +8,7 @@ public:
     ButtonWebServer(const char* ssid, const char* password, CommunicationService communicationService);
     virtual void init();
     virtual void handleButtonStatus();
+    virtual void handleSeq();
     void handleRemoteButtonStatus();
 private:
     const char* wifiSSID;

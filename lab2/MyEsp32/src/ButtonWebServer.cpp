@@ -2,6 +2,7 @@
 #include <WebServer.h>
 #include <SPIFFS.h>
 #include "AsyncStop.h"
+#include"CurrentLed.h"
 #include "WebServerBase.h"
 #include "ButtonWebServer.h"
 
@@ -16,7 +17,14 @@ void ButtonWebServer::init()
     setupRoutes();
     server.on("/press", HTTP_POST, [this]() { this->handleButtonStatus(); });
     server.on("/pressRemote", HTTP_POST, [this]() { this->handleRemoteButtonStatus(); });
+    server.on("/seq", HTTP_GET, [this]() { this->handleSeq();});
     start();
+}
+void ButtonWebServer::handleSeq()
+{
+    Serial.println("Seq requested");
+    uint8_t currentLed = CurrentLed::getInstance().ledNumber;
+    server.send(200, "text/plain", String(currentLed));
 }
 
 void ButtonWebServer::handleReactRouting()
