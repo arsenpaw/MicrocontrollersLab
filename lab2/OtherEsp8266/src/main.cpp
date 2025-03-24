@@ -7,8 +7,8 @@
 #define BUTTON_DEBOUNCE_DELAY 200UL
 #define LED_BLINK_INTERVAL 500UL
 #define BUTTON_PIN 16U  
-#define LED1_PIN 13U    
-#define LED2_PIN 12U    
+#define LED1_PIN 15U    
+#define LED2_PIN 14U    
 #define LED3_PIN 0U     
 
 uint32_t ledOrder[] = {LED1_PIN, LED2_PIN, LED3_PIN}; 
