@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <FS.h>
 #include <SoftwareSerial.h>
 #include "CommunicationService.h"
+
 
 #define BUTTON_DEBOUNCE_DELAY 200UL
 #define LED_BLINK_INTERVAL 500UL
@@ -46,39 +48,19 @@ void processButtonAction() {
 }
 
 void proceesRootRequest() {
-    String markup =  "<!DOCTYPE html>"
-        "<html>"
-        "<head>"
-        "<title>LED Control</title>"
-        "<style>"
-        "body { font-family: Arial; text-align: center; margin-top: 50px; }"
-        "button { font-size: 20px; padding: 10px 20px; }"
-        "</style>"
-        "</head>"
-        "<body>"
-        "<h1>LED Control via Web</h1>"
-        "<button onclick=\"simulateButton()\">Press Button</button>"
-        "<button onclick=\"simulateButtonRemote()\">Press Remote Button</button>"
-        "<script>"
-        "function simulateButton() {"
-        "  fetch('/simulate').then(response => response.text()).then(data => {"
-        "    console.log(data);"
-        "  });"
-        "}"
-        "function simulateButtonRemote() {"
-        "  fetch('/simulateRemote').then(response => response.text()).then(data => {"
-        "    console.log(data);"
-        "  });"
-        "}"
-        "</script>"
-        "</body>"
-        "</html>";
-        server.send(200, "text/html", markup);
+    File file = SPIFFS.open("/index.html", "r");
+    if (!file) {
+        server.send(500, "text/plain", "No index.html");
+        return;
+    }
+    server.streamFile(file, "text/html");
+    file.close();
 }
 
 void setup() {
     Serial.begin(112500);
     communicationService.init();
+
     pinMode(BUTTON_PIN, INPUT); 
     pinMode(LED1_PIN, OUTPUT);
     pinMode(LED2_PIN, OUTPUT);
@@ -89,26 +71,45 @@ void setup() {
         digitalWrite(ledOrder[i], LOW);
     }
 
+    if (!SPIFFS.begin()) {
+        Serial.println("No init file system");
+        return;
+    }
+
     WiFi.mode(WIFI_AP);
     WiFi.softAP(ssid);
     Serial.println("WiFi AP Started");
 
     server.on("/", HTTP_GET, proceesRootRequest);
 
-    server.on("/simulate", []() 
+    server.on("/press", HTTP_POST, []() 
     {
         processButtonAction();
+        communicationService.send(ToogleCommand::ON);
         server.send(200, "text/plain", "Button press simulated.");
     });
 
-    server.on("/simulateRemote", []() 
+    server.on("/pressRemote", HTTP_POST, []() 
     {
         communicationService.send(ToogleCommand::ON);
         server.send(200, "text/plain", "Button press simulated.");
     });
 
+    server.on("/seq", HTTP_GET, []() {
+        server.send(200, "text/plain", String(currentLed));
+    });
+
     server.begin();
     Serial.println("Server started");
+
+    server.on("/ledStatus", HTTP_GET, []() {
+        String json = "{";
+        json += "\"led1\":" + String(digitalRead(LED1_PIN) == HIGH) + ",";
+        json += "\"led2\":" + String(digitalRead(LED2_PIN) == HIGH) + ",";
+        json += "\"led3\":" + String(digitalRead(LED3_PIN) == HIGH);
+        json += "}";
+        server.send(200, "application/json", json);
+    });
 }
 
 void handleButtonPress() {
