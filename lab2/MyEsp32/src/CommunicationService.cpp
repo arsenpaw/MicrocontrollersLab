@@ -1,7 +1,8 @@
 #include "CommunicationService.h"
+#include <SoftwareSerial.h>
 #include <thread>
 
-CommunicationService::CommunicationService(HardwareSerial& serial, uint32_t baudRate)
+CommunicationService::CommunicationService(SoftwareSerial& serial, uint32_t baudRate)
     : communicationSerial(serial), baudRate(baudRate)
 {
 
@@ -10,7 +11,7 @@ CommunicationService::CommunicationService(HardwareSerial& serial, uint32_t baud
 
 void CommunicationService::init()
 {
-    communicationSerial.begin(baudRate, SERIAL_6E2,16,17);
+     communicationSerial.begin(baudRate, SWSERIAL_6E2);
 }
 void CommunicationService::send(ToogleCommand command)
 {

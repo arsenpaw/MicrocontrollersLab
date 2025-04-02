@@ -1,16 +1,17 @@
 #pragma once
 #include "ToogleCommand.h"
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 class CommunicationService
 {
 public:
     using CommandDelegate = std::function<void(ToogleCommand)>;
     void init();
-    CommunicationService(HardwareSerial& serial, uint32_t baudRate);
+    CommunicationService(SoftwareSerial& serial, uint32_t baudRate);
     virtual ~CommunicationService();
     void send(ToogleCommand command);
     void onReceive(CommandDelegate commandDelegate);
 private:
-    HardwareSerial& communicationSerial; 
+SoftwareSerial& communicationSerial; 
     uint32_t baudRate = 115200;
 };

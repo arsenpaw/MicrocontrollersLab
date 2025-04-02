@@ -101,9 +101,6 @@
       }, 500);
 
       function sendRequest(route) {
-        if (route === '/press') {
-          buttonToggle = true;
-        }
         fetch(route, { method: 'POST' })
           .then(response => response.text())
           .then(data => console.log("Response:", data))

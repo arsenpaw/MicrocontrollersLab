@@ -1,8 +1,9 @@
 #include <Arduino.h>
-#include <ButtonWebServer.h>
+#include <SoftwareSerial.h>
 #include <SPIFFS.h>
 #include "AsyncStop.h"
 #include "CommunicationService.h"
+#include "ButtonWebServer.h"
 #include "CurrentLEd.h"
 #include "ToogleCommand.h"
 #define BUTTON_PIN 4U
@@ -22,7 +23,7 @@ bool buttonToggle = 0;
 uint32_t lastDebounceTime = 0;
 uint32_t previousMillis = 0; 
 uint32_t buttonPressStartTime = 0;
-HardwareSerial uartBridge(Serial2);
+SoftwareSerial uartBridge(4,5); // RX, TX
 CommunicationService communicationService(uartBridge, 115200);
 ButtonWebServer buttonWebServer("ARSEN_ESP32", "123456789", communicationService);
 
@@ -117,6 +118,7 @@ void blinkLedWithAsyncStop()
   if (onRelease()) 
   {
     AsyncStop::getInstance().request();
+    communicationService.send(ToogleCommand::ON);
   }
 
   if (AsyncStop::getInstance().isActive()) 

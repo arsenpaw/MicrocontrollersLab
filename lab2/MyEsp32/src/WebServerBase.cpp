@@ -1,7 +1,8 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include "AsyncStop.h"
-#include "SPIFFS.h"
+#include "FS.h"
+#include "LittleFS.h"
 #include "WebServerBase.h"
 
 WebServerBase::WebServerBase(uint16_t port)
@@ -38,7 +39,7 @@ void WebServerBase::initAP(const char* ssid, const char* password, IPAddress ip)
 
 void WebServerBase::setupRoutes()
 {
-    server.serveStatic("/", SPIFFS, "/index.html");
+    server.serveStatic("/", LittleFS, "/index.html");
     server.onNotFound([this]() { this->handleNotFound(); });
 }
 
