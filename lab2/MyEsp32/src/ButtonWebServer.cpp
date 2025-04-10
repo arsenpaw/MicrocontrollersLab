@@ -1,6 +1,7 @@
-#include <WiFi.h>
-#include <WebServer.h>
-#include <SPIFFS.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+#include <LittleFS.h>
 #include "AsyncStop.h"
 #include"CurrentLed.h"
 #include "WebServerBase.h"
