@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <SPIFFS.h>
+#include <LittleFS.h>
 #include "AsyncStop.h"
 #include "CommunicationService.h"
 #include "ButtonWebServer.h"
@@ -29,10 +29,10 @@ ButtonWebServer buttonWebServer("ARSEN_ESP32", "123456789", communicationService
 
 void setup()
 {
-    //Q: why not in constructor?
+
   communicationService.init();  
   Serial.begin(115200);
-  if(!SPIFFS.begin(true)){
+  if(!LittleFS.begin()){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }

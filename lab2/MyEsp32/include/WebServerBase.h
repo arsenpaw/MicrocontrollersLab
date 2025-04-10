@@ -1,8 +1,8 @@
 #ifndef WEBSERVERBASE_H
 #define WEBSERVERBASE_H
 
-#include <WiFi.h>
-#include <WebServer.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
 #include "AsyncStop.h"
 
 class WebServerBase {
@@ -17,7 +17,7 @@ public:
     virtual void handleNotFound();
     void handleClient();
 protected:
-    WebServer server;
+ESP8266WebServer server;
 };
 
 #endif
