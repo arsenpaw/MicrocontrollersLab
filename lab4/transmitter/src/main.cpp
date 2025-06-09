@@ -1,8 +1,7 @@
 #include <Arduino.h>
-#define MIC_PIN A0
+#define MIC_PIN A1
 #include <esp_now.h>
 #include <WiFi.h>
-
 
 uint8_t broadcastAddress[] = {0x3C, 0x8A, 0x1F, 0xA4, 0x1B, 0x58};
 
